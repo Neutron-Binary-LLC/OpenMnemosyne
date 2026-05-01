@@ -2,6 +2,24 @@
 
 OpenMnemosyne is a hybrid LLM-supervised trading signal system featuring a Base Signal Generator, a fast Neural Critic, and an LLM-based teacher (Judge) using the SCIPAB framework.
 
+## Problem it tries to solve: Generalization & out-of-distribution learning (Not a complete solution)
+
+### Why it matters: real-world deployment
+
+### Models often fail when conditions shift slightly from training data.  
+
+### What’s unsolved
+	•	Learning causal structure instead of correlations
+	•	Reliable performance in unseen environments
+	•	Transfer learning that works across domains
+
+### Human impact
+	•	AI that works globally (not just on curated datasets)
+	•	Climate models that generalize across regions
+	•	Medical models that work across populations
+
+
+
 ## System Architecture
 
 ```mermaid
