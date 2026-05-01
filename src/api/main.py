@@ -5,13 +5,14 @@ from src.models.neural_critic import get_neural_critic_model
 from src.models.base_signal import BaseSignalGenerator
 from typing import Dict
 import torch
+from src.config.settings import settings
 from datetime import datetime
 
 app = FastAPI(title="OpenMnemosyne Inference Gateway")
 
 # Dependency injection for models and services
-critic_model = get_neural_critic_model()
-base_model = BaseSignalGenerator()
+critic_model = get_neural_critic_model().to(settings.DEVICE)
+base_model = BaseSignalGenerator().to(settings.DEVICE)
 llm_service = LLMJudgeService()
 
 @app.get("/health")
@@ -21,11 +22,11 @@ def health_check():
 @app.post("/generate_signal", response_model=SignalResponse)
 async def generate_signal(symbol: str, timeframe: str, data: Dict):
     # 1. Prepare data tensor (simplified)
-    input_tensor = torch.randn(1, 16, 128) # Mock market data
+    input_tensor = torch.randn(1, 16, 128).to(settings.DEVICE) # Mock market data
     
     # 2. Get Base Signal
     with torch.no_grad():
-        base_probs = base_model(torch.randn(1, 16, 64))
+        base_probs = base_model(torch.randn(1, 16, 64).to(settings.DEVICE))
         base_signal_idx = torch.argmax(base_probs).item()
         base_signal = ["SELL", "HOLD", "BUY"][base_signal_idx]
         base_conf = base_probs[0, base_signal_idx].item()
@@ -62,7 +63,7 @@ async def generate_signal(symbol: str, timeframe: str, data: Dict):
 @app.post("/get_critic_correction", response_model=CorrectiveVector)
 async def get_critic_correction(market_data: Dict):
     # Dedicated endpoint for pure critic output
-    input_tensor = torch.randn(1, 16, 128)
+    input_tensor = torch.randn(1, 16, 128).to(settings.DEVICE)
     with torch.no_grad():
         vec = critic_model(input_tensor)
         return CorrectiveVector(

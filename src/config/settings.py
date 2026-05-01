@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     
     # Model Settings
+    DEVICE: str = "cuda" if os.getenv("USE_CUDA", "true").lower() == "true" else "cpu"
     BASE_SIGNAL_MODEL_TYPE: str = "tft"  # tft or lstm-transformer
     NEURAL_CRITIC_PARAMS: int = 15000000 # ~15M params
     CORRECTIVE_VECTOR_DIM: int = 64

@@ -82,10 +82,17 @@ The Neural Critic generates a **64-dimensional corrective vector** that modifies
 ## How to Run
 1. Ensure you have Docker and Docker Compose installed.
 2. Set your `LLM_API_KEY` in the environment.
-3. Start the system:
+3. Start the system (default is CPU mode for compatibility):
    ```bash
    docker-compose up --build
    ```
+
+### GPU Support
+If you have an NVIDIA GPU and the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) installed:
+1. Uncomment the `deploy` sections in `docker-compose.yml`.
+2. Set `USE_CUDA=true` in the environment variables within `docker-compose.yml`.
+
+If you see the error `could not select device driver "nvidia"`, it means your Docker environment is not configured for NVIDIA GPUs. The system will default to CPU if you keep the `deploy` section commented out.
 
 ## Bootstrapping the Neural Critic
 The system uses a two-stage training approach:

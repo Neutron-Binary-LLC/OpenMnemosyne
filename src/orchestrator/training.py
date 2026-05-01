@@ -36,8 +36,8 @@ class TrainingOrchestrator:
     Supports Supervised Learning (Initial Bootstrapping) and PPO (Fine-tuning)
     """
     def __init__(self, neural_critic, base_generator, llm_judge):
-        self.neural_critic = neural_critic
-        self.base_generator = base_generator
+        self.neural_critic = neural_critic.to(settings.DEVICE)
+        self.base_generator = base_generator.to(settings.DEVICE)
         self.llm_judge = llm_judge
         self.reward_fn = PPORewardFunction()
         
@@ -45,6 +45,9 @@ class TrainingOrchestrator:
         """
         Train Neural Critic to mimic LLM Judge
         """
+        market_data = market_data.to(settings.DEVICE)
+        llm_target_vector = llm_target_vector.to(settings.DEVICE)
+        
         optimizer = torch.optim.Adam(self.neural_critic.parameters(), lr=settings.LEARNING_RATE)
         criterion = torch.nn.MSELoss()
         

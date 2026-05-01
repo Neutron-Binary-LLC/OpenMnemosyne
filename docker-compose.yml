@@ -9,13 +9,14 @@ services:
     environment:
       - LLM_API_KEY=${LLM_API_KEY}
       - VECTOR_DB_URL=http://qdrant:6333
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+      - USE_CUDA=false
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
     depends_on:
       - qdrant
 
@@ -26,13 +27,14 @@ services:
       - .:/app
     environment:
       - LLM_API_KEY=${LLM_API_KEY}
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+      - USE_CUDA=false
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
 
   qdrant:
     image: qdrant/qdrant
