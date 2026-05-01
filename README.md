@@ -103,8 +103,57 @@ The system uses a two-stage training approach:
 - Switch modes by adjusting the `TIMEFRAME` parameter in API requests.
 - The `NeuralCritic` architecture supports varying sequence lengths via its Transformer encoder, allowing it to adapt to different data granularities.
 
-## Future Roadmap
-- Integration with live brokerage APIs (Interactive Brokers/Binance).
-- Implementation of Hierarchical Reinforcement Learning for position management.
-- Multi-agent debate between multiple LLM Judges to reduce bias.
-- Distributed training support via Ray.
+## Real-Life Use Cases
+
+OpenMnemosyne's hybrid architecture makes it suitable for various high-stakes trading environments. Below are detailed scenarios demonstrating how the system provides value:
+
+### 1. Hedge Fund Alpha Generation (Fundamental Overlay)
+Large-scale funds use the **Base Signal Generator** to process high-frequency technical data across thousands of symbols. The **LLM Judge** acts as a senior analyst, ingesting non-quantifiable data like earnings call transcripts and central bank speeches.
+
+*   **Example Scenario**: A technical breakout (Base Signal: `BUY`) occurs on a regional bank stock. However, the LLM Judge identifies systemic liquidity stress mentioned in recent Fed minutes stored in **MemPalace**.
+*   **Critic Action**: The Neural Critic generates a corrective vector with a high `liquidity_risk` (0.85) and negative `buy_prob_delta` (-0.4), effectively neutralizing the trade.
+*   **Result**: The fund avoids a "bull trap" caused by macro factors invisible to technical models.
+
+### 2. Retail Algo-Trading (Intelligent Safety Net)
+Individual traders often struggle with "market regime shifts" where their backtested strategies fail. OpenMnemosyne provides a plug-and-play **sanity layer**.
+
+*   **Example Scenario**: A retail trend-following strategy signals a `BUY` on a volatile tech stock during an after-hours earnings announcement. 
+*   **Critic Action**: The Neural Critic detects a `sentiment_shock` (0.92) due to the high-variance LLM analysis of the earnings surprise vs. guidance. It sets `position_size_delta` to -70%.
+*   **Result**: The trader stays in the trade but with significantly reduced exposure, protecting capital against the extreme volatility that follows.
+
+### 3. Institutional Risk Management (Portfolio Health Monitor)
+Risk desks use the system not for signal generation, but for **continuous diagnostic monitoring** of existing positions.
+
+*   **Example Scenario**: A desk holds a large position in an energy company. The market is stable, but a geopolitical event (e.g., pipeline disruption) is flagged by the LLM Judge.
+*   **Critic Action**: The `tail_risk` score in the 64D vector spikes from 0.05 to 0.78. The `overall_sanity_score` drops to 0.3.
+*   **Result**: The risk management dashboard triggers an automated alert. The desk can hedge the position with options before the technical indicators even reflect the new risk profile.
+
+### 4. Crypto Volatility Trading (Flash Crash Prevention)
+In crypto, liquidity can vanish in seconds. The **MemPalace** stores "fingerprints" of past liquidity drains and flash crashes.
+
+*   **Example Scenario**: A momentum bot sees a `BUY` signal on a mid-cap altcoin.
+*   **Critic Action**: The Neural Critic retrieves a similar pattern from MemPalace associated with a previous "rug pull" or liquidity drain. It flags `macro_risk` and `liquidity_risk` as critical.
+*   **Result**: The system blocks the trade (`final_decision: HOLD`) despite the bullish technical indicators, saving the portfolio from a 20% slippage event.
+
+## Suggested Features & Roadmap
+
+### Phase 1: Foundation (Current)
+- [x] Modular architecture with Docker support.
+- [x] Hybrid Neural Critic (MLP-Mixer + Transformer).
+- [x] SCIPAB-structured LLM supervision.
+- [x] Basic PPO Reinforcement Learning skeleton.
+
+### Phase 2: Enhanced Intelligence (Short-term)
+- **Multi-Agent Debate**: Implement a "Committee of Judges" where multiple LLMs (e.g., GPT-4, Claude 3, and a local Llama-3) debate the trade before updating the MemPalace.
+- **Hierarchical RL**: Add a higher-level agent to manage global portfolio heat and sector exposure based on individual ticker corrections.
+- **Live Data Connectors**: Built-in adapters for Alpaca, Interactive Brokers, and Binance.
+
+### Phase 3: Advanced Memory & Scaling (Mid-term)
+- **Distributed Training**: Integration with **Ray** or **PyTorch Distributed** to handle massive bootstrapping sessions.
+- **Knowledge Graph Integration**: Upgrade MemPalace to include a Knowledge Graph (e.g., FalkorDB) to map supply chain relationships between companies.
+- **Cross-Asset Correlation**: Expand the 64D vector to include correlations with indices (S&P 500, DXY) and commodities (Gold, Oil).
+
+### Phase 4: Production Maturity (Long-term)
+- **Self-Healing Infrastructure**: Automatic retraining triggers when the "Critic Alignment" score drops below a threshold for extended periods.
+- **Web Dashboard**: A real-time monitoring UI to visualize the Base Signal vs. Critic Correction in a unified "Decision Canvas."
+- **Institutional Compliance**: Audit logs that store the exact SCIPAB reasoning for every major correction for regulatory reporting.
