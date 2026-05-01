@@ -97,6 +97,49 @@ The Neural Critic generates a **64-dimensional corrective vector** that modifies
 - `src/schemas/`: Pydantic V2 data models.
 - `src/config/`: System settings and reward weights.
 
+## Configuration & Module Relations
+
+### System Configuration
+The system uses `config.yaml` for externalized parameters. This file allows you to tune model architectures, training hyperparameters, and reward weights without modifying the source code.
+
+```yaml
+# Example config.yaml snippet
+project_name: "OpenMnemosyne"
+base_signal_model_type: "tft"
+learning_rate: 0.0001
+reward_weights:
+  w1_ann_return: 1.0
+  w4_sanity_bonus: 0.2
+```
+
+### Module Interactions
+The following diagram illustrates how the configuration flows into the modules and how the modules interact with each other.
+
+```mermaid
+graph LR
+    Config[config.yaml] --> Settings[src/config/settings.py]
+    
+    subgraph "Core Modules"
+        Settings --> API[src/api/main.py]
+        Settings --> Orchestrator[src/orchestrator/training.py]
+        Settings --> Models[src/models/]
+        Settings --> Services[src/services/]
+    end
+    
+    API --> Models
+    Orchestrator --> Models
+    Orchestrator --> Services
+    Services --> MemPalace[(MemPalace)]
+    Models --> NeuralCritic[Neural Critic]
+    Models --> BSG[Base Signal Generator]
+    
+    subgraph "Data Flow"
+        API -->|Inference| NeuralCritic
+        API -->|Inference| BSG
+        Orchestrator -->|Training| NeuralCritic
+    end
+```
+
 ## How to Run
 1. Ensure you have Docker and Docker Compose installed.
 2. Set your `LLM_API_KEY` in the environment.

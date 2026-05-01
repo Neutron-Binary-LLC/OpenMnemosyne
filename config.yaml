@@ -1,0 +1,31 @@
+# System Settings
+project_name: "OpenMnemosyne"
+env: "development"
+log_level: "INFO"
+
+# Model Settings
+# device: "cuda" # If not set, it will default based on USE_CUDA env var or auto-detect
+base_signal_model_type: "tft"
+neural_critic_params: 15000000
+corrective_vector_dim: 64
+
+# Training Settings
+learning_rate: 0.0001
+batch_size: 64
+ppo_epochs: 10
+gamma: 0.99
+
+# Reward Weights
+reward_weights:
+  w1_ann_return: 1.0
+  w2_downside: 0.5
+  w3_diff_return: 0.3
+  w4_sanity_bonus: 0.2
+  w5_critic_alignment: 0.4
+
+# Memory Settings
+vector_db_url: "http://qdrant:6333"
+relational_db_url: "sqlite:///./mem_palace.db"
+
+# LLM Settings
+llm_model: "gpt-4-turbo"
